@@ -1,0 +1,133 @@
+import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { 
+  AlertTriangle, 
+  MapPin, 
+  Users, 
+  Smartphone,
+  Globe,
+  Shield,
+  ArrowRight,
+  TrendingUp
+} from 'lucide-react';
+
+const HeroSection = () => {
+  const stats = [
+    { label: 'Reports Submitted', value: '12.4K', icon: AlertTriangle },
+    { label: 'Active Users', value: '3.2K', icon: Users },
+    { label: 'Hazards Mapped', value: '890', icon: MapPin },
+    { label: 'Lives Protected', value: '25K+', icon: Shield },
+  ];
+
+  const features = [
+    { 
+      title: 'Real-time Reporting', 
+      description: 'Submit hazard reports instantly with GPS location and multimedia',
+      icon: Smartphone 
+    },
+    { 
+      title: 'Global Coverage', 
+      description: 'Monitor ocean conditions worldwide with our distributed network',
+      icon: Globe 
+    },
+    { 
+      title: 'Community Driven', 
+      description: 'Powered by fishermen, sailors, and coastal communities',
+      icon: Users 
+    },
+  ];
+
+  return (
+    <div className="relative min-h-screen bg-gradient-wave">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-gradient-depth" />
+      <div className="absolute top-20 left-10 w-72 h-72 bg-primary/10 rounded-full blur-3xl animate-float" />
+      <div className="absolute bottom-20 right-10 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-wave" />
+      
+      <div className="relative container mx-auto px-4 pt-20 pb-16">
+        {/* Hero Content */}
+        <div className="text-center mb-16 animate-fade-in-up">
+          <Badge variant="secondary" className="mb-6 text-sm font-medium">
+            <TrendingUp className="h-4 w-4 mr-2" />
+            Protecting Maritime Communities Worldwide
+          </Badge>
+          
+          <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-ocean bg-clip-text text-transparent">
+            Ocean Hazard
+            <br />
+            Early Warning
+          </h1>
+          
+          <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
+            Crowdsourced hazard reporting and social media analytics to keep coastal communities safe. 
+            Report dangers, monitor conditions, and stay informed.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
+            <Button size="lg" className="text-lg px-8 py-6 shadow-ocean hover:shadow-glow transition-all duration-300">
+              <AlertTriangle className="h-5 w-5 mr-2" />
+              Report Hazard Now
+              <ArrowRight className="h-5 w-5 ml-2" />
+            </Button>
+            
+            <Button variant="outline" size="lg" className="text-lg px-8 py-6">
+              <MapPin className="h-5 w-5 mr-2" />
+              View Live Map
+            </Button>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+          {stats.map((stat, index) => (
+            <Card 
+              key={stat.label} 
+              className="p-6 text-center bg-card/60 backdrop-blur-sm border-border/50 hover:bg-card/80 transition-all duration-300 animate-fade-in-up"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <stat.icon className="h-8 w-8 text-primary mx-auto mb-3" />
+              <div className="text-2xl font-bold text-foreground mb-1">{stat.value}</div>
+              <div className="text-sm text-muted-foreground">{stat.label}</div>
+            </Card>
+          ))}
+        </div>
+
+        {/* Features */}
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
+          {features.map((feature, index) => (
+            <Card 
+              key={feature.title}
+              className="p-8 bg-card/60 backdrop-blur-sm border-border/50 hover:bg-card/80 hover:shadow-wave transition-all duration-300 animate-fade-in-up"
+              style={{ animationDelay: `${(index + 4) * 0.1}s` }}
+            >
+              <feature.icon className="h-12 w-12 text-primary mb-4 animate-float" />
+              <h3 className="text-xl font-semibold mb-3 text-foreground">{feature.title}</h3>
+              <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+            </Card>
+          ))}
+        </div>
+
+        {/* CTA Section */}
+        <Card className="p-8 md:p-12 bg-gradient-ocean text-primary-foreground text-center shadow-ocean">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Join the Global Ocean Safety Network
+          </h2>
+          <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+            Your reports help protect maritime communities worldwide. Be part of the solution.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" variant="secondary" className="text-lg px-8 py-6">
+              Start Reporting
+            </Button>
+            <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
+              Learn More
+            </Button>
+          </div>
+        </Card>
+      </div>
+    </div>
+  );
+};
+
+export default HeroSection;
