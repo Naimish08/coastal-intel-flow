@@ -14,26 +14,26 @@ import {
 
 const HeroSection = () => {
   const stats = [
-    { label: 'Reports Submitted', value: '12.4K', icon: AlertTriangle },
-    { label: 'Active Users', value: '3.2K', icon: Users },
-    { label: 'Hazards Mapped', value: '890', icon: MapPin },
-    { label: 'Lives Protected', value: '25K+', icon: Shield },
+    { label: 'Reports Submitted', value: '18.9K', icon: AlertTriangle },
+    { label: 'Fishing Communities', value: '5.6K', icon: Users },
+    { label: 'Hazards Mapped', value: '1.2K', icon: MapPin },
+    { label: 'Lives Protected', value: '5.2M+', icon: Shield },
   ];
 
   const features = [
     { 
-      title: 'Real-time Reporting', 
-      description: 'Submit hazard reports instantly with GPS location and multimedia',
+      title: 'Cyclone & Monsoon Alerts', 
+      description: 'Report severe weather conditions affecting India\'s coastal regions',
       icon: Smartphone 
     },
     { 
-      title: 'Global Coverage', 
-      description: 'Monitor ocean conditions worldwide with our distributed network',
+      title: '13 Coastal States', 
+      description: 'Complete coverage of India\'s maritime states and union territories',
       icon: Globe 
     },
     { 
-      title: 'Community Driven', 
-      description: 'Powered by fishermen, sailors, and coastal communities',
+      title: 'Fishing Community Focus', 
+      description: 'Powered by traditional fishermen and coastal communities',
       icon: Users 
     },
   ];
@@ -50,18 +50,18 @@ const HeroSection = () => {
         <div className="text-center mb-16 animate-fade-in-up">
           <Badge variant="secondary" className="mb-6 text-sm font-medium">
             <TrendingUp className="h-4 w-4 mr-2" />
-            Protecting Maritime Communities Worldwide
+            Protecting India's Coastal Communities
           </Badge>
           
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-ocean bg-clip-text text-transparent">
-            Ocean Hazard
+            India Coastal
             <br />
-            Early Warning
+            Hazard Network
           </h1>
           
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
-            Crowdsourced hazard reporting and social media analytics to keep coastal communities safe. 
-            Report dangers, monitor conditions, and stay informed.
+            Crowdsourced hazard reporting for India's coastal regions. Report cyclones, tidal surges, 
+            and maritime dangers to keep fishing communities and coastal populations safe.
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
@@ -111,10 +111,10 @@ const HeroSection = () => {
         {/* CTA Section */}
         <Card className="p-8 md:p-12 bg-gradient-ocean text-primary-foreground text-center shadow-ocean">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Join the Global Ocean Safety Network
+            Join India's Coastal Safety Network
           </h2>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            Your reports help protect maritime communities worldwide. Be part of the solution.
+            Your reports help protect fishing communities and coastal populations across India's maritime states.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="secondary" className="text-lg px-8 py-6">

@@ -5,9 +5,11 @@ import { AlertTriangle, Clock, MapPin, Users } from 'lucide-react';
 
 const ReportHazard = () => {
   const emergencyContacts = [
-    { region: 'North America', phone: '+1-800-OCEAN-911', email: 'emergency@oceanguard-na.org' },
-    { region: 'Europe', phone: '+44-800-OCEAN-911', email: 'emergency@oceanguard-eu.org' },
-    { region: 'Asia Pacific', phone: '+61-800-OCEAN-911', email: 'emergency@oceanguard-ap.org' },
+    { region: 'West Coast (Gujarat, Maharashtra)', phone: '1554 (Coast Guard)', email: 'mrcc-mumbai@indiancoastguard.nic.in' },
+    { region: 'East Coast (Odisha, West Bengal)', phone: '1554 / +91-33-2469-6969', email: 'mrcc-chennai@indiancoastguard.nic.in' },
+    { region: 'South Coast (Tamil Nadu, Kerala)', phone: '1554 / +91-44-2534-4040', email: 'mrcc-kochi@indiancoastguard.nic.in' },
+    { region: 'Andaman & Nicobar Islands', phone: '+91-3192-232102', email: 'mrcc-portblair@indiancoastguard.nic.in' },
+    { region: 'Lakshadweep Islands', phone: '+91-4896-262445', email: 'cgstation-minicoy@indiancoastguard.nic.in' },
   ];
 
   const reportingGuidelines = [
@@ -61,9 +63,11 @@ const ReportHazard = () => {
                   then submit a report to help others.
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  <Badge variant="destructive">Coast Guard: Channel 16</Badge>
-                  <Badge variant="outline">Emergency: 911/112</Badge>
-                  <Badge variant="outline">Mayday: VHF Channel 16</Badge>
+                  <Badge variant="destructive">Coast Guard: 1554</Badge>
+                  <Badge variant="outline">Police: 100</Badge>
+                  <Badge variant="outline">Fire: 101</Badge>
+                  <Badge variant="outline">Medical: 102</Badge>
+                  <Badge variant="outline">Disaster: 108</Badge>
                 </div>
               </div>
             </div>

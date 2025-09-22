@@ -29,13 +29,14 @@ const HazardReporting = () => {
   const [location, setLocation] = useState<string>('');
   
   const hazardTypes = [
-    { value: 'storm', label: 'Severe Storm', icon: Wind, color: 'destructive' },
+    { value: 'cyclone', label: 'Cyclone/Deep Depression', icon: Wind, color: 'destructive' },
     { value: 'tsunami', label: 'Tsunami Warning', icon: Waves, color: 'destructive' },
-    { value: 'rip-current', label: 'Dangerous Currents', icon: Waves, color: 'warning' },
-    { value: 'lightning', label: 'Lightning Activity', icon: Zap, color: 'warning' },
-    { value: 'debris', label: 'Floating Debris', icon: Anchor, color: 'warning' },
-    { value: 'pollution', label: 'Pollution/Oil Spill', icon: Fish, color: 'destructive' },
-    { value: 'navigation', label: 'Navigation Hazard', icon: Compass, color: 'warning' },
+    { value: 'monsoon-surge', label: 'Monsoon Tidal Surge', icon: Waves, color: 'warning' },
+    { value: 'fishing-hazard', label: 'Fishing Ground Hazard', icon: Fish, color: 'warning' },
+    { value: 'debris', label: 'Floating Debris/Nets', icon: Anchor, color: 'warning' },
+    { value: 'pollution', label: 'Marine Pollution', icon: Fish, color: 'destructive' },
+    { value: 'navigation', label: 'Coastal Navigation Hazard', icon: Compass, color: 'warning' },
+    { value: 'erosion', label: 'Coastal Erosion', icon: Compass, color: 'destructive' },
   ];
 
   const getCurrentLocation = () => {

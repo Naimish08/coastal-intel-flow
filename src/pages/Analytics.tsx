@@ -17,11 +17,11 @@ import {
 
 const Analytics = () => {
   const reportTypes = [
-    { type: 'Storm Systems', reports: 342, trend: '+15%', color: 'text-destructive' },
-    { type: 'Navigation Hazards', reports: 189, trend: '+8%', color: 'text-warning' },
-    { type: 'Marine Pollution', reports: 156, trend: '+23%', color: 'text-destructive' },
-    { type: 'Dangerous Currents', reports: 134, trend: '+12%', color: 'text-warning' },
-    { type: 'Equipment Failures', reports: 98, trend: '-5%', color: 'text-muted-foreground' },
+    { type: 'Cyclones & Monsoons', reports: 456, trend: '+28%', color: 'text-destructive' },
+    { type: 'Fishing Ground Hazards', reports: 298, trend: '+18%', color: 'text-warning' },
+    { type: 'Coastal Erosion', reports: 234, trend: '+35%', color: 'text-destructive' },
+    { type: 'Marine Pollution', reports: 187, trend: '+22%', color: 'text-destructive' },
+    { type: 'Tidal Surges', reports: 145, trend: '+15%', color: 'text-warning' },
   ];
 
   const timeFrames = [
@@ -40,8 +40,8 @@ const Analytics = () => {
       icon: Calendar,
     },
     {
-      title: 'Top Contributing Region',
-      value: 'North Atlantic',
+      title: 'Top Contributing State',
+      value: 'Tamil Nadu',
       description: '34% of all verified reports',
       icon: Globe,
     },
@@ -52,9 +52,9 @@ const Analytics = () => {
       icon: TrendingUp,
     },
     {
-      title: 'Community Growth',
-      value: '+247 users',
-      description: 'New contributors this week',
+      title: 'Coastal Communities',
+      value: '+347 users',
+      description: 'New fishing communities joined',
       icon: Users,
     },
   ];
