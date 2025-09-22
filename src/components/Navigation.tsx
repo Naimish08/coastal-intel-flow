@@ -3,6 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Badge } from '@/components/ui/badge';
 import { Link, useLocation } from 'react-router-dom';
+import { useLanguage } from '@/contexts/LanguageContext';
+import LanguageSwitcher from './LanguageSwitcher';
 import { 
   Menu, 
   Waves, 
@@ -18,13 +20,14 @@ import {
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { t } = useLanguage();
 
   const navItems = [
-    { label: 'Home', href: '/', icon: Home },
-    { label: 'Report Hazard', href: '/report', icon: AlertTriangle },
-    { label: 'Live Map', href: '/map', icon: MapPin },
-    { label: 'Analytics', href: '/analytics', icon: BarChart3 },
-    { label: 'Community', href: '/community', icon: Users },
+    { label: t('nav.home'), href: '/', icon: Home },
+    { label: t('nav.reportHazard'), href: '/report', icon: AlertTriangle },
+    { label: t('nav.liveMap'), href: '/map', icon: MapPin },
+    { label: t('nav.analytics'), href: '/analytics', icon: BarChart3 },
+    { label: t('nav.community'), href: '/community', icon: Users },
   ];
 
   const isActive = (href: string) => {
@@ -44,8 +47,8 @@ const Navigation = () => {
             <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl animate-pulse" />
           </div>
           <div>
-            <h1 className="font-bold text-xl text-foreground">OceanGuard</h1>
-            <p className="text-xs text-muted-foreground">Hazard Reporting</p>
+            <h1 className="font-bold text-xl text-foreground">{t('app.title')}</h1>
+            <p className="text-xs text-muted-foreground">{t('app.subtitle')}</p>
           </div>
         </Link>
 
@@ -66,16 +69,17 @@ const Navigation = () => {
             </Link>
           ))}
           <div className="flex items-center gap-3 ml-4">
+            <LanguageSwitcher />
             <Button size="sm" className="relative">
               <Bell className="h-4 w-4 mr-2" />
-              Alerts
+              {t('nav.alerts')}
               <Badge variant="destructive" className="absolute -top-2 -right-2 h-5 w-5 p-0 text-xs">
                 3
               </Badge>
             </Button>
             <Button variant="outline" size="sm">
               <Shield className="h-4 w-4 mr-2" />
-              Login
+              {t('nav.login')}
             </Button>
           </div>
         </div>
@@ -105,13 +109,16 @@ const Navigation = () => {
                 </Link>
               ))}
               <hr className="border-border" />
+              <div className="mb-4">
+                <LanguageSwitcher />
+              </div>
               <Button className="w-full">
                 <Bell className="h-4 w-4 mr-2" />
-                View Alerts (3)
+                {t('nav.viewAlerts')} (3)
               </Button>
               <Button variant="outline" className="w-full">
                 <Shield className="h-4 w-4 mr-2" />
-                Login
+                {t('nav.login')}
               </Button>
             </div>
           </SheetContent>

@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { 
   AlertTriangle, 
   MapPin, 
@@ -13,27 +14,29 @@ import {
 } from 'lucide-react';
 
 const HeroSection = () => {
+  const { t } = useLanguage();
+  
   const stats = [
-    { label: 'Reports Submitted', value: '18.9K', icon: AlertTriangle },
-    { label: 'Fishing Communities', value: '5.6K', icon: Users },
-    { label: 'Hazards Mapped', value: '1.2K', icon: MapPin },
-    { label: 'Lives Protected', value: '5.2M+', icon: Shield },
+    { label: t('stats.reportsSubmitted'), value: '18.9K', icon: AlertTriangle },
+    { label: t('stats.fishingCommunities'), value: '5.6K', icon: Users },
+    { label: t('stats.hazardsMapped'), value: '1.2K', icon: MapPin },
+    { label: t('stats.livesProtected'), value: '5.2M+', icon: Shield },
   ];
 
   const features = [
     { 
-      title: 'Cyclone & Monsoon Alerts', 
-      description: 'Report severe weather conditions affecting India\'s coastal regions',
+      title: t('features.cycloneAlerts.title'), 
+      description: t('features.cycloneAlerts.description'),
       icon: Smartphone 
     },
     { 
-      title: '13 Coastal States', 
-      description: 'Complete coverage of India\'s maritime states and union territories',
+      title: t('features.coastalStates.title'), 
+      description: t('features.coastalStates.description'),
       icon: Globe 
     },
     { 
-      title: 'Fishing Community Focus', 
-      description: 'Powered by traditional fishermen and coastal communities',
+      title: t('features.fishingCommunity.title'), 
+      description: t('features.fishingCommunity.description'),
       icon: Users 
     },
   ];
@@ -50,30 +53,27 @@ const HeroSection = () => {
         <div className="text-center mb-16 animate-fade-in-up">
           <Badge variant="secondary" className="mb-6 text-sm font-medium">
             <TrendingUp className="h-4 w-4 mr-2" />
-            Protecting India's Coastal Communities
+            {t('hero.badge')}
           </Badge>
           
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-ocean bg-clip-text text-transparent">
-            India Coastal
-            <br />
-            Hazard Network
+            {t('hero.title')}
           </h1>
           
           <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto leading-relaxed">
-            Crowdsourced hazard reporting for India's coastal regions. Report cyclones, tidal surges, 
-            and maritime dangers to keep fishing communities and coastal populations safe.
+            {t('hero.subtitle')}
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
             <Button size="lg" className="text-lg px-8 py-6 shadow-ocean hover:shadow-glow transition-all duration-300">
               <AlertTriangle className="h-5 w-5 mr-2" />
-              Report Hazard Now
+              {t('hero.reportNow')}
               <ArrowRight className="h-5 w-5 ml-2" />
             </Button>
             
             <Button variant="outline" size="lg" className="text-lg px-8 py-6">
               <MapPin className="h-5 w-5 mr-2" />
-              View Live Map
+              {t('hero.viewMap')}
             </Button>
           </div>
         </div>
@@ -111,17 +111,17 @@ const HeroSection = () => {
         {/* CTA Section */}
         <Card className="p-8 md:p-12 bg-gradient-ocean text-primary-foreground text-center shadow-ocean">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Join India's Coastal Safety Network
+            {t('cta.title')}
           </h2>
           <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
-            Your reports help protect fishing communities and coastal populations across India's maritime states.
+            {t('cta.description')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" variant="secondary" className="text-lg px-8 py-6">
-              Start Reporting
+              {t('hero.startReporting')}
             </Button>
             <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground text-primary-foreground hover:bg-primary-foreground hover:text-primary">
-              Learn More
+              {t('hero.learnMore')}
             </Button>
           </div>
         </Card>
