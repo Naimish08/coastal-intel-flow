@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
-  MapPin, 
   Layers, 
   Filter, 
   AlertTriangle,
@@ -17,6 +16,8 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react';
+import { MapContainer, TileLayer, CircleMarker, Popup, Tooltip, LayerGroup } from 'react-leaflet';
+import 'leaflet/dist/leaflet.css';
 
 const MapVisualization = () => {
   const [activeFilter, setActiveFilter] = useState('all');
@@ -198,32 +199,105 @@ const MapVisualization = () => {
           <div className="lg:col-span-3">
             <Card className="h-[600px] shadow-ocean">
               <CardContent className="p-0 h-full">
-                <div className="relative w-full h-full bg-gradient-depth rounded-lg overflow-hidden">
-                  {/* Placeholder Map */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-accent/20 to-primary/20">
-                    <div className="text-center p-8">
-                      <MapPin className="h-16 w-16 text-primary mx-auto mb-4 animate-float" />
-                      <h3 className="text-2xl font-bold text-foreground mb-2">Interactive Map</h3>
-                      <p className="text-muted-foreground mb-6 max-w-md">
-                        This area will display an interactive map showing real-time hazard locations, 
-                        weather conditions, and community reports.
-                      </p>
-                      <div className="flex items-center justify-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <div className="w-3 h-3 bg-destructive rounded-full" />
-                          High Priority
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <div className="w-3 h-3 bg-warning rounded-full" />
-                          Medium Priority
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <div className="w-3 h-3 bg-secondary rounded-full" />
-                          Low Priority
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                <div className="relative w-full h-full rounded-lg overflow-hidden">
+                  <MapContainer center={[19.076, 72.8777]} zoom={10} className="w-full h-full">
+                    <TileLayer
+                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                      attribution="&copy; OpenStreetMap contributors"
+                    />
+
+                    {/* Hazard markers: coastal Mumbai and nearby Maharashtra coast */}
+                    <LayerGroup>
+                      {[
+                        {
+                          id: 'worli-seaface',
+                          position: [19.0169, 72.8178],
+                          title: 'High Waves near Worli Sea Face',
+                          type: 'High Waves',
+                          severity: 'high',
+                          source: 'Citizen + Satellite',
+                          updated: '12 min ago',
+                          confidence: 0.88,
+                        },
+                        {
+                          id: 'marine-drive',
+                          position: [18.941, 72.8238],
+                          title: 'Coastal Flooding - Marine Drive',
+                          type: 'Urban Flooding',
+                          severity: 'high',
+                          source: 'Citizen + Social NLP',
+                          updated: '25 min ago',
+                          confidence: 0.81,
+                        },
+                        {
+                          id: 'versova-beach',
+                          position: [19.134, 72.812],
+                          title: 'Unusual Tide - Versova Beach',
+                          type: 'Unusual Tide',
+                          severity: 'medium',
+                          source: 'Tide Gauge + Citizen',
+                          updated: '48 min ago',
+                          confidence: 0.75,
+                        },
+                        {
+                          id: 'juhu-beach',
+                          position: [19.0988, 72.8267],
+                          title: 'Swell Surge - Juhu',
+                          type: 'Swell Surge',
+                          severity: 'medium',
+                          source: 'Wave Model + Drone',
+                          updated: '1 hr ago',
+                          confidence: 0.79,
+                        },
+                        {
+                          id: 'colaba',
+                          position: [18.9067, 72.8147],
+                          title: 'Waterlogging - Colaba',
+                          type: 'Flooding',
+                          severity: 'low',
+                          source: 'Citizen',
+                          updated: '1 hr 20 min ago',
+                          confidence: 0.62,
+                        },
+                        {
+                          id: 'alibaug',
+                          position: [18.6412, 72.8722],
+                          title: 'High Waves - Alibaug Coast',
+                          type: 'High Waves',
+                          severity: 'medium',
+                          source: 'Satellite + Buoy',
+                          updated: '36 min ago',
+                          confidence: 0.83,
+                        },
+                        {
+                          id: 'mira-bhayandar',
+                          position: [19.2936, 72.8721],
+                          title: 'Tidal Inundation - Mira Bhayandar',
+                          type: 'Tide Flooding',
+                          severity: 'low',
+                          source: 'Citizen + Gauge',
+                          updated: '2 hr ago',
+                          confidence: 0.58,
+                        },
+                      ].map((h) => {
+                        const color = h.severity === 'high' ? '#ef4444' : h.severity === 'medium' ? '#f59e0b' : '#22c55e';
+                        const radius = h.severity === 'high' ? 12 : h.severity === 'medium' ? 10 : 8;
+                        return (
+                          <CircleMarker key={h.id} center={h.position as [number, number]} pathOptions={{ color, fillColor: color, fillOpacity: 0.35 }} radius={radius}>
+                            <Tooltip>{h.title}</Tooltip>
+                            <Popup>
+                              <div className="space-y-1">
+                                <div className="font-medium">{h.title}</div>
+                                <div className="text-xs text-muted-foreground">Type: {h.type} • Severity: {h.severity}</div>
+                                <div className="text-xs text-muted-foreground">Source: {h.source}</div>
+                                <div className="text-xs text-muted-foreground">Updated: {h.updated} • Confidence: {(h.confidence * 100).toFixed(0)}%</div>
+                              </div>
+                            </Popup>
+                          </CircleMarker>
+                        );
+                      })}
+                    </LayerGroup>
+                  </MapContainer>
 
                   {/* Map Controls Overlay */}
                   <div className="absolute top-4 right-4 space-y-2">
@@ -237,25 +311,13 @@ const MapVisualization = () => {
                     </Button>
                   </div>
 
-                  {/* Map Statistics Overlay */}
-                  <div className="absolute bottom-4 left-4 right-4">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                      <div className="bg-background/90 backdrop-blur-sm p-3 rounded-lg text-center">
-                        <div className="text-lg font-bold text-destructive">12</div>
-                        <div className="text-xs text-muted-foreground">Active Alerts</div>
-                      </div>
-                      <div className="bg-background/90 backdrop-blur-sm p-3 rounded-lg text-center">
-                        <div className="text-lg font-bold text-primary">247</div>
-                        <div className="text-xs text-muted-foreground">Total Reports</div>
-                      </div>
-                      <div className="bg-background/90 backdrop-blur-sm p-3 rounded-lg text-center">
-                        <div className="text-lg font-bold text-success">89%</div>
-                        <div className="text-xs text-muted-foreground">Verified</div>
-                      </div>
-                      <div className="bg-background/90 backdrop-blur-sm p-3 rounded-lg text-center">
-                        <div className="text-lg font-bold text-accent">156</div>
-                        <div className="text-xs text-muted-foreground">Contributors</div>
-                      </div>
+                  {/* Legend Overlay */}
+                  <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm rounded-lg p-3 shadow-wave">
+                    <div className="text-xs font-medium mb-2">Hazard Severity</div>
+                    <div className="flex items-center gap-4 text-xs">
+                      <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: '#ef4444' }} /> High</div>
+                      <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: '#f59e0b' }} /> Medium</div>
+                      <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: '#22c55e' }} /> Low</div>
                     </div>
                   </div>
                 </div>
