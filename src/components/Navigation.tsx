@@ -14,13 +14,27 @@ import {
   Users, 
   Bell,
   Shield,
-  Home
+  Home,
+  User as UserIcon,
+  LogOut,
+  Settings
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { t } = useLanguage();
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { label: t('nav.home'), href: '/', icon: Home },
@@ -77,10 +91,49 @@ const Navigation = () => {
                 3
               </Badge>
             </Button>
-            <Button variant="outline" size="sm">
-              <Shield className="h-4 w-4 mr-2" />
-              {t('nav.login')}
-            </Button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.user_metadata.avatar_url} alt={user.email} />
+                      <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.user_metadata.full_name || user.email}</p>
+                      <p className="text-xs leading-none text-muted-foreground">
+                        {user.email}
+                      </p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <UserIcon className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => signOut()}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button asChild variant="outline" size="sm">
+                <Link to="/login">
+                  <Shield className="h-4 w-4 mr-2" />
+                  {t('nav.login')}
+                </Link>
+              </Button>
+            )}
           </div>
         </div>
 
@@ -116,10 +169,28 @@ const Navigation = () => {
                 <Bell className="h-4 w-4 mr-2" />
                 {t('nav.viewAlerts')} (3)
               </Button>
-              <Button variant="outline" className="w-full">
-                <Shield className="h-4 w-4 mr-2" />
-                {t('nav.login')}
-              </Button>
+              {user ? (
+                <div className="flex items-center gap-4 p-2 rounded-lg bg-muted">
+                  <Avatar>
+                    <AvatarImage src={user.user_metadata.avatar_url} alt={user.email} />
+                    <AvatarFallback>{user.email?.charAt(0).toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col">
+                    <span className="font-medium">{user.user_metadata.full_name || user.email}</span>
+                    <Button variant="ghost" size="sm" className="justify-start p-0 h-auto" onClick={() => signOut()}>
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <Button asChild variant="outline" className="w-full">
+                  <Link to="/login" onClick={() => setIsOpen(false)}>
+                    <Shield className="h-4 w-4 mr-2" />
+                    {t('nav.login')}
+                  </Link>
+                </Button>
+              )}
             </div>
           </SheetContent>
         </Sheet>
