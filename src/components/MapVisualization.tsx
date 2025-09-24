@@ -16,51 +16,65 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react';
-import { MapContainer, TileLayer, CircleMarker, Popup, Tooltip, LayerGroup } from 'react-leaflet';
+import { MapContainer, TileLayer, CircleMarker, Popup, Tooltip, LayerGroup, Rectangle } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
 const MapVisualization = () => {
-  const [activeFilter, setActiveFilter] = useState('all');
+  const [activeFilter, setActiveFilter] = useState('today_2_4');
   const [layersVisible, setLayersVisible] = useState({
     hazards: true,
     weather: true,
     traffic: false,
     social: true,
+    citizens: true,
   });
 
   const hazardTypes = [
-    { id: 'storm', label: 'Severe Storms', count: 12, color: 'destructive', icon: Wind },
-    { id: 'current', label: 'Dangerous Currents', count: 8, color: 'warning', icon: Waves },
-    { id: 'lightning', label: 'Lightning Activity', count: 5, color: 'warning', icon: Zap },
-    { id: 'debris', label: 'Floating Debris', count: 15, color: 'secondary', icon: AlertTriangle },
+    { id: 'high_waves', label: 'High Waves', count: 4, color: 'destructive', icon: Wind },
+    { id: 'flooding', label: 'Flooding', count: 3, color: 'warning', icon: Waves },
+    { id: 'swell', label: 'Swell Surge', count: 2, color: 'secondary', icon: Zap },
+    { id: 'other', label: 'Other', count: 1, color: 'secondary', icon: AlertTriangle },
   ];
 
   const recentReports = [
-    {
-      id: 1,
-      type: 'Severe Storm',
-      location: 'Gulf of Mexico, 25.7617° N',
-      time: '12 minutes ago',
-      priority: 'high',
-      verified: true,
-    },
-    {
-      id: 2,
-      type: 'Rip Current',
-      location: 'Pacific Coast, CA',
-      time: '28 minutes ago',
-      priority: 'medium',
-      verified: true,
-    },
-    {
-      id: 3,
-      type: 'Debris Field',
-      location: 'Atlantic Ocean, FL',
-      time: '1 hour ago',
-      priority: 'low',
-      verified: false,
-    },
+    { id: 1, type: 'High Waves', location: 'Puri Fishing Harbor, Odisha', time: '2:45 PM', priority: 'high', verified: true },
+    { id: 2, type: 'Flooding', location: 'Balisahi, Puri', time: '2:52 PM', priority: 'medium', verified: true },
+    { id: 3, type: 'High Waves', location: 'Chakratirtha Rd, Puri', time: '3:05 PM', priority: 'high', verified: false },
   ];
+
+  // Demo dataset for Odisha scenario (Cyclone near Puri): Citizens + Social
+  type Hazard = {
+    id: string;
+    position: [number, number];
+    title: string;
+    eventType: 'High Waves' | 'Flooding' | 'Swell Surge' | 'Other';
+    severity: 'high' | 'medium' | 'low';
+    source: 'Citizen' | 'Social';
+    updated: string; // HH:MM
+    confidence: number; // 0-1
+  };
+
+  const hazardsPuri: Hazard[] = [
+    { id: 'fisherman-jetty', position: [19.8137, 85.8365], title: 'High waves at Puri Fishing Harbor', eventType: 'High Waves', severity: 'high', source: 'Citizen', updated: '14:45', confidence: 0.9 },
+    { id: 'street-flood', position: [19.7982, 85.8339], title: 'Street flooding reported', eventType: 'Flooding', severity: 'medium', source: 'Citizen', updated: '14:52', confidence: 0.82 },
+    { id: 'chakratirtha', position: [19.8173, 85.8421], title: 'Strong swell observed on beach', eventType: 'High Waves', severity: 'high', source: 'Citizen', updated: '15:05', confidence: 0.78 },
+    // Social signals (lower spatial certainty represented the same for demo)
+    { id: 'social-1', position: [19.809, 85.84], title: 'Odia tweet: roads filling with sea water', eventType: 'Flooding', severity: 'medium', source: 'Social', updated: '15:00', confidence: 0.7 },
+    { id: 'social-2', position: [19.806, 85.828], title: 'FB video: big waves near shore (unclear)', eventType: 'High Waves', severity: 'low', source: 'Social', updated: '14:58', confidence: 0.5 },
+  ];
+
+  const withinTimeWindow = (updated: string) => {
+    if (activeFilter !== 'today_2_4') return true;
+    const [hh, mm] = updated.split(':').map(Number);
+    const minutes = hh * 60 + mm;
+    return minutes >= 14 * 60 && minutes <= 16 * 60;
+  };
+
+  const displayedHazards = hazardsPuri.filter(h =>
+    layersVisible.hazards &&
+    withinTimeWindow(h.updated) &&
+    ((h.source === 'Social' && layersVisible.social) || (h.source === 'Citizen' && layersVisible.citizens))
+  );
 
   const toggleLayer = (layer: string) => {
     setLayersVisible(prev => ({
@@ -98,10 +112,9 @@ const MapVisualization = () => {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="today_2_4">Today 2–4 PM</SelectItem>
                       <SelectItem value="all">All Reports</SelectItem>
                       <SelectItem value="24h">Last 24 Hours</SelectItem>
-                      <SelectItem value="7d">Last Week</SelectItem>
-                      <SelectItem value="30d">Last Month</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -136,9 +149,10 @@ const MapVisualization = () => {
               <CardContent className="space-y-3">
                 {Object.entries({
                   hazards: 'Hazard Reports',
+                  citizens: 'Citizen Reports',
+                  social: 'Social Mentions',
                   weather: 'Weather Data',
                   traffic: 'Marine Traffic',
-                  social: 'Social Media',
                 }).map(([key, label]) => (
                   <div key={key} className="flex items-center justify-between">
                     <span className="text-sm">{label}</span>
@@ -200,95 +214,46 @@ const MapVisualization = () => {
             <Card className="h-[600px] shadow-ocean">
               <CardContent className="p-0 h-full">
                 <div className="relative w-full h-full rounded-lg overflow-hidden">
-                  <MapContainer center={[19.076, 72.8777]} zoom={10} className="w-full h-full">
+                  <MapContainer center={[19.8135, 85.8312]} zoom={11} className="w-full h-full">
                     <TileLayer
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                       attribution="&copy; OpenStreetMap contributors"
                     />
 
-                    {/* Hazard markers: coastal Mumbai and nearby Maharashtra coast */}
+                    {/* Model prediction area (INCOIS) around 3 PM near Puri coast */}
                     <LayerGroup>
-                      {[
-                        {
-                          id: 'worli-seaface',
-                          position: [19.0169, 72.8178],
-                          title: 'High Waves near Worli Sea Face',
-                          type: 'High Waves',
-                          severity: 'high',
-                          source: 'Citizen + Satellite',
-                          updated: '12 min ago',
-                          confidence: 0.88,
-                        },
-                        {
-                          id: 'marine-drive',
-                          position: [18.941, 72.8238],
-                          title: 'Coastal Flooding - Marine Drive',
-                          type: 'Urban Flooding',
-                          severity: 'high',
-                          source: 'Citizen + Social NLP',
-                          updated: '25 min ago',
-                          confidence: 0.81,
-                        },
-                        {
-                          id: 'versova-beach',
-                          position: [19.134, 72.812],
-                          title: 'Unusual Tide - Versova Beach',
-                          type: 'Unusual Tide',
-                          severity: 'medium',
-                          source: 'Tide Gauge + Citizen',
-                          updated: '48 min ago',
-                          confidence: 0.75,
-                        },
-                        {
-                          id: 'juhu-beach',
-                          position: [19.0988, 72.8267],
-                          title: 'Swell Surge - Juhu',
-                          type: 'Swell Surge',
-                          severity: 'medium',
-                          source: 'Wave Model + Drone',
-                          updated: '1 hr ago',
-                          confidence: 0.79,
-                        },
-                        {
-                          id: 'colaba',
-                          position: [18.9067, 72.8147],
-                          title: 'Waterlogging - Colaba',
-                          type: 'Flooding',
-                          severity: 'low',
-                          source: 'Citizen',
-                          updated: '1 hr 20 min ago',
-                          confidence: 0.62,
-                        },
-                        {
-                          id: 'alibaug',
-                          position: [18.6412, 72.8722],
-                          title: 'High Waves - Alibaug Coast',
-                          type: 'High Waves',
-                          severity: 'medium',
-                          source: 'Satellite + Buoy',
-                          updated: '36 min ago',
-                          confidence: 0.83,
-                        },
-                        {
-                          id: 'mira-bhayandar',
-                          position: [19.2936, 72.8721],
-                          title: 'Tidal Inundation - Mira Bhayandar',
-                          type: 'Tide Flooding',
-                          severity: 'low',
-                          source: 'Citizen + Gauge',
-                          updated: '2 hr ago',
-                          confidence: 0.58,
-                        },
-                      ].map((h) => {
+                      <Rectangle
+                        bounds={[
+                          [19.825, 85.80],
+                          [19.785, 85.86],
+                        ]}
+                        pathOptions={{ color: '#3b82f6', weight: 2, fillOpacity: 0.1 }}
+                      >
+                        <Tooltip>Model: High waves likely ~3:00 PM</Tooltip>
+                        <Popup>
+                          <div className="space-y-1">
+                            <div className="font-medium">INCOIS Model Prediction</div>
+                            <div className="text-xs text-muted-foreground">Event: High Waves</div>
+                            <div className="text-xs text-muted-foreground">Time: ~3:00 PM IST</div>
+                            <div className="text-xs text-muted-foreground">Area: Puri coastal strip</div>
+                          </div>
+                        </Popup>
+                      </Rectangle>
+                    </LayerGroup>
+
+                    {/* Hazard markers: Odisha (Puri) scenario */}
+                    <LayerGroup>
+                      {displayedHazards.map((h) => {
                         const color = h.severity === 'high' ? '#ef4444' : h.severity === 'medium' ? '#f59e0b' : '#22c55e';
                         const radius = h.severity === 'high' ? 12 : h.severity === 'medium' ? 10 : 8;
+                        const fillOpacity = h.source === 'Social' ? 0.25 : 0.4;
                         return (
-                          <CircleMarker key={h.id} center={h.position as [number, number]} pathOptions={{ color, fillColor: color, fillOpacity: 0.35 }} radius={radius}>
+                          <CircleMarker key={h.id} center={h.position} pathOptions={{ color, fillColor: color, fillOpacity }} radius={radius}>
                             <Tooltip>{h.title}</Tooltip>
                             <Popup>
                               <div className="space-y-1">
                                 <div className="font-medium">{h.title}</div>
-                                <div className="text-xs text-muted-foreground">Type: {h.type} • Severity: {h.severity}</div>
+                                <div className="text-xs text-muted-foreground">Type: {h.eventType} • Severity: {h.severity}</div>
                                 <div className="text-xs text-muted-foreground">Source: {h.source}</div>
                                 <div className="text-xs text-muted-foreground">Updated: {h.updated} • Confidence: {(h.confidence * 100).toFixed(0)}%</div>
                               </div>
@@ -311,13 +276,32 @@ const MapVisualization = () => {
                     </Button>
                   </div>
 
-                  {/* Legend Overlay */}
-                  <div className="absolute bottom-4 left-4 bg-background/90 backdrop-blur-sm rounded-lg p-3 shadow-wave">
-                    <div className="text-xs font-medium mb-2">Hazard Severity</div>
-                    <div className="flex items-center gap-4 text-xs">
-                      <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: '#ef4444' }} /> High</div>
-                      <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: '#f59e0b' }} /> Medium</div>
-                      <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: '#22c55e' }} /> Low</div>
+                  {/* Legend + Analytics Overlay */}
+                  <div className="absolute bottom-4 left-4 right-4 grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="bg-background/90 backdrop-blur-sm rounded-lg p-3 shadow-wave">
+                      <div className="text-xs font-medium mb-2">Hazard Severity</div>
+                      <div className="flex items-center gap-4 text-xs">
+                        <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: '#ef4444' }} /> High</div>
+                        <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: '#f59e0b' }} /> Medium</div>
+                        <div className="flex items-center gap-2"><span className="inline-block w-3 h-3 rounded-full" style={{ backgroundColor: '#22c55e' }} /> Low</div>
+                      </div>
+                    </div>
+                    <div className="bg-background/90 backdrop-blur-sm rounded-lg p-3 shadow-wave">
+                      <div className="text-xs font-medium mb-2">Validation Snapshot (Puri, Today 2–4 PM)</div>
+                      <div className="grid grid-cols-3 gap-2 text-center">
+                        <div>
+                          <div className="text-lg font-bold text-primary">{displayedHazards.filter(h => h.source === 'Citizen').length}</div>
+                          <div className="text-xs text-muted-foreground">Citizen Reports</div>
+                        </div>
+                        <div>
+                          <div className="text-lg font-bold text-accent">12</div>
+                          <div className="text-xs text-muted-foreground">Social Mentions</div>
+                        </div>
+                        <div>
+                          <div className="text-lg font-bold text-success">Yes</div>
+                          <div className="text-xs text-muted-foreground">Model Match</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

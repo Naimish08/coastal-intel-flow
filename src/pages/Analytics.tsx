@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import Dashboard from '../components/Dashboard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -14,6 +15,7 @@ import {
   FileText,
   Database
 } from 'lucide-react';
+import { ResponsiveContainer, PieChart, Pie, Cell, BarChart, Bar, XAxis, YAxis, Tooltip as ReTooltip, Legend as ReLegend } from 'recharts';
 
 const Analytics = () => {
   const reportTypes = [
@@ -57,6 +59,48 @@ const Analytics = () => {
       description: 'New fishing communities joined',
       icon: Users,
     },
+  ];
+
+  // Dummy fused analytics for INCOIS vs Crowd (Today 2–4 PM)
+  const regions = [
+    { region: 'Puri (Odisha)', model: 'High Waves', modelFlag: true, citizen: 3, social: 12 },
+    { region: 'Mumbai (MH)', model: 'Flooding', modelFlag: true, citizen: 2, social: 9 },
+    { region: 'Chennai (TN)', model: 'High Waves', modelFlag: true, citizen: 1, social: 5 },
+    { region: 'Kochi (Kerala)', model: 'Flooding', modelFlag: true, citizen: 2, social: 4 },
+    { region: 'Kolkata Coast (WB)', model: 'Flooding', modelFlag: true, citizen: 1, social: 3 },
+  ];
+
+  const confidenceRows = regions.map(r => {
+    const citizenWeight = Math.min(1, r.citizen / 3);
+    const socialWeight = Math.min(1, r.social / 10);
+    const base = r.modelFlag ? 0.4 : 0.1;
+    const score = Math.min(1, base + 0.4 * citizenWeight + 0.2 * socialWeight);
+    const decision = r.modelFlag && r.citizen >= 2 ? 'Yes flood' : 'No flood';
+    return { ...r, score: Math.round(score * 100), decision };
+  });
+
+  const sourceMixData = useMemo(() => (
+    [
+      { name: 'Citizen', value: regions.reduce((a, r) => a + r.citizen, 0) },
+      { name: 'Social', value: regions.reduce((a, r) => a + r.social, 0) },
+    ]
+  ), []);
+
+  const COLORS = ['#3b82f6', '#a78bfa'];
+
+  const reportTypesBars = [
+    { type: 'High Waves', count: 22 },
+    { type: 'Flooding', count: 17 },
+    { type: 'Swell Surge', count: 9 },
+    { type: 'Other', count: 6 },
+  ];
+
+  const timeBuckets = [
+    { bucket: '2:00', citizen: 7, social: 10 },
+    { bucket: '2:30', citizen: 9, social: 12 },
+    { bucket: '3:00', citizen: 11, social: 14 },
+    { bucket: '3:30', citizen: 6, social: 9 },
+    { bucket: '4:00', citizen: 4, social: 6 },
   ];
 
   return (
@@ -130,27 +174,70 @@ const Analytics = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              {reportTypes.map((report, index) => (
-                <div key={index} className="flex items-center justify-between p-4 border border-border rounded-lg bg-muted/30">
-                  <div className="flex items-center gap-4">
-                    <AlertTriangle className={`h-5 w-5 ${report.color}`} />
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="col-span-1 lg:col-span-2 h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={reportTypesBars}>
+                    <XAxis dataKey="type" fontSize={12} />
+                    <YAxis allowDecimals={false} fontSize={12} />
+                    <ReTooltip />
+                    <Bar dataKey="count" fill="#10b981" radius={[4,4,0,0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={sourceMixData} dataKey="value" nameKey="name" outerRadius={80} label>
+                      {sourceMixData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <ReLegend />
+                    <ReTooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* INCOIS vs Crowd Confidence Workflow */}
+        <Card className="mb-8">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              INCOIS Model Validation (Today 2–4 PM)
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="space-y-3">
+                {confidenceRows.map((row, i) => (
+                  <div key={i} className="flex items-center justify-between p-3 rounded-lg border border-border bg-muted/30">
                     <div>
-                      <h4 className="font-medium text-foreground">{report.type}</h4>
-                      <p className="text-sm text-muted-foreground">{report.reports} total reports</p>
+                      <div className="font-medium text-foreground">{row.region}</div>
+                      <div className="text-xs text-muted-foreground">Model: {row.model} · Citizen: {row.citizen} · Social: {row.social}</div>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <div className="text-sm font-semibold">{row.score}%</div>
+                      <Badge variant={row.decision === 'Yes flood' ? 'default' : 'secondary'}>{row.decision}</Badge>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <Badge 
-                      variant={report.trend.startsWith('+') ? 'default' : 'secondary'}
-                      className="mb-2"
-                    >
-                      {report.trend}
-                    </Badge>
-                    <div className="text-sm text-muted-foreground">vs. last period</div>
-                  </div>
-                </div>
-              ))}
+                ))}
+              </div>
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={timeBuckets}>
+                    <XAxis dataKey="bucket" fontSize={12} />
+                    <YAxis allowDecimals={false} fontSize={12} />
+                    <ReTooltip />
+                    <Bar dataKey="citizen" stackId="a" fill="#3b82f6" radius={[4,4,0,0]} />
+                    <Bar dataKey="social" stackId="a" fill="#a78bfa" radius={[4,4,0,0]} />
+                    <ReLegend />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
             </div>
           </CardContent>
         </Card>
