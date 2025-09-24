@@ -1,73 +1,43 @@
-# Welcome to your Lovable project
+# OceanGuard Project - Research Resources
 
-## Project info
+This repository collects key research papers and resources relevant to crowdsourced social media data utilization, flood forecasting, disaster management, and hazard reporting systems.
 
-**URL**: https://lovable.dev/projects/906305d4-e97f-46f3-b61f-2093d1989b4d
+## Research Papers and Resources
 
-## How can I edit this code?
+1. **The Use of Crowdsourced Social Media Data to Improve Flood Forecasting**  
+   Journal of Hydrology, Volume 622, Part A, May 2023  
+   Reliable flood forecasting improved by assimilating crowdsourced social media data through innovative update methods using 2D flood models.  
+   [Read More](https://www.research.ed.ac.uk/en/publications/the-use-of-crowdsourced-social-media-data-to-improve-flood-foreca)
 
-There are several ways of editing your application.
+2. **Crowdsourcing in Disaster Management: A Survey**  
+   IEEE Xplore, 2023  
+   Overview of how crowdsourcing technologies support different stages of the disaster management cycle, improving response and preparedness.  
+   [Read More](https://ieeexplore.ieee.org/document/10041135)
 
-**Use Lovable**
+3. **Crowdsourcing the Disaster Management Cycle**  
+   ResearchGate, 2017  
+   Discusses integration of crowdsourcing approaches into disaster management phases such as mitigation, preparedness, response, and recovery.  
+   [Read More](https://www.researchgate.net/publication/318184302_Crowdsourcing_the_Disaster_Management_Cycle)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/906305d4-e97f-46f3-b61f-2093d1989b4d) and start prompting.
+4. **Social Media Crowdsourcing and Disaster Management: A Case Study**  
+   PLOS One, 2023  
+   Case studies of social media crowdsourcing applied to disaster events, focusing on data quality, validation, and community engagement.  
+   [Read More](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0312240)
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## Summary
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+These papers provide insights on how to harness the power of crowdsourced social media data to improve disaster forecasting accuracy, timely response, and community involvement. They cover methodological advances in data assimilation, AI/ML techniques for validation, and practical disaster management integration.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+## Usage
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Use these resources to guide the development, AI/ML model design, and backend architecture of the OceanGuard platform to leverage crowdsourced inputs for accurate hazard detection and alerting.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+---
 
-# Step 3: Install the necessary dependencies.
-npm i
+## License
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/906305d4-e97f-46f3-b61f-2093d1989b4d) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+This repository is for academic and research purposes. All rights to the papers belong to their respective publishers.
